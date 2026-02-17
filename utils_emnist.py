@@ -13,13 +13,6 @@ def load_labels(path):
         return np.frombuffer(f.read(), dtype=np.uint8)
 
 def fix_orientation(X):
-    """
-    EMNIST images are:
-    - rotated 90 degrees
-    - flipped horizontally
-
-    This fixes them.
-    """
     X = np.transpose(X, (0, 2, 1, 3))
     X = np.flip(X, axis=2)
     return X
