@@ -1,340 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EMNIST Character Recognition</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 500px;
-            width: 100%;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        
-        .canvas-container {
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            background: white;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        canvas {
-            display: block;
-            cursor: crosshair;
-            touch-action: none;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .clear-btn {
-            background: #f43f5e;
-            color: white;
-        }
-        
-        .clear-btn:hover {
-            background: #e11d48;
-            transform: translateY(-2px);
-        }
-        
-        .predict-btn {
-            background: #667eea;
-            color: white;
-        }
-        
-        .predict-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-        
-        .predict-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .prediction {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            min-height: 100px;
-        }
-        
-        .prediction-title {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .main-prediction {
-            font-size: 64px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .confidence {
-            text-align: center;
-            color: #666;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        
-        .alternatives {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .alt-item {
-            background: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #666;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .loading {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .error {
-            text-align: center;
-            color: #f43f5e;
-            font-weight: 600;
-        }
-        
-        .stroke-control {
-            margin-bottom: 20px;
-        }
-        
-        .stroke-control label {
-            display: block;
-            margin-bottom: 8px;
-            color: #666;
-            font-size: 14px;
-        }
-        
-        input[type="range"] {
-            width: 100%;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>✍️ Character Recognition</h1>
-        <p class="subtitle">Draw a character (0-9, A-Z, a-z)</p>
-        
-        <div class="stroke-control">
-            <label>Brush Size: <span id="strokeValue">12</span>px</label>
-            <input type="range" id="strokeSize" min="5" max="30" value="12">
-        </div>
+      <h1>  Character Recognition</h1>
+      <p class="subtitle">Draw a character (0-9, A-Z, a-z)</p>
 
-        <div class="canvas-container">
-            <canvas id="canvas" width="400" height="400"></canvas>
-        </div>
+      <div class="stroke-control">
+        <label>Brush Size: <span id="strokeValue">12</span>px</label>
+        <input type="range" id="strokeSize" min="5" max="30" value="12" />
+      </div>
 
-        <div class="controls">
-            <button class="clear-btn" onclick="clearCanvas()">Clear</button>
-            <button class="predict-btn" id="predictBtn" onclick="predict()">Predict</button>
-        </div>
+      <div class="canvas-container">
+        <canvas id="canvas" width="400" height="400"></canvas>
+      </div>
 
-        <div class="prediction" id="result">
-            <div class="loading">Draw a character and click Predict</div>
-        </div>
+      <div class="controls">
+        <button class="clear-btn" onclick="clearCanvas()">Clear</button>
+        <button class="predict-btn" id="predictBtn" onclick="predict()">
+          Predict
+        </button>
+      </div>
+
+      <div class="prediction" id="result">
+        <div class="loading">Draw a character and click Predict</div>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const strokeSlider = document.getElementById('strokeSize');
-        const strokeValue = document.getElementById('strokeValue');
-        const predictBtn = document.getElementById('predictBtn');
-        
-        let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
-
-        // API endpoint
-        const API_URL = 'http://localhost:5000/api/predict';
-
-        // Initialize canvas
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 12;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        // Stroke size control
-        strokeSlider.addEventListener('input', (e) => {
-            ctx.lineWidth = e.target.value;
-            strokeValue.textContent = e.target.value;
-        });
-
-        // Mouse events
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
-        
-        // Touch events
-        canvas.addEventListener('touchstart', handleTouchStart);
-        canvas.addEventListener('touchmove', handleTouchMove);
-        canvas.addEventListener('touchend', stopDrawing);
-
-        function startDrawing(e) {
-            isDrawing = true;
-            [lastX, lastY] = [e.offsetX, e.offsetY];
-        }
-
-        function draw(e) {
-            if (!isDrawing) return;
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(e.offsetX, e.offsetY);
-            ctx.stroke();
-            [lastX, lastY] = [e.offsetX, e.offsetY];
-        }
-
-        function stopDrawing() {
-            isDrawing = false;
-        }
-
-        function handleTouchStart(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            isDrawing = true;
-            [lastX, lastY] = [x, y];
-        }
-
-        function handleTouchMove(e) {
-            if (!isDrawing) return;
-            e.preventDefault();
-            const touch = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-            ctx.lineTo(x, y);
-            ctx.stroke();
-            [lastX, lastY] = [x, y];
-        }
-
-        function clearCanvas() {
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            document.getElementById('result').innerHTML = '<div class="loading">Draw a character and click Predict</div>';
-        }
-
-        async function predict() {
-            try {
-                // Disable button
-                predictBtn.disabled = true;
-                document.getElementById('result').innerHTML = '<div class="loading">Predicting...</div>';
-
-                // Get canvas as base64
-                const imageData = canvas.toDataURL('image/png');
-
-                // Send to API
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ image: imageData })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // Display results
-                    const resultHTML = `
-                        <div class="prediction-title">Prediction</div>
-                        <div class="main-prediction">${data.prediction}</div>
-                        <div class="confidence">${data.confidence.toFixed(1)}% confidence</div>
-                        <div class="alternatives">
-                            ${data.top5.slice(1).map(item => 
-                                `<div class="alt-item">${item.character}: ${item.confidence.toFixed(1)}%</div>`
-                            ).join('')}
-                        </div>
-                    `;
-                    document.getElementById('result').innerHTML = resultHTML;
-                } else {
-                    document.getElementById('result').innerHTML = 
-                        `<div class="error">Error: ${data.error}</div>`;
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('result').innerHTML = 
-                    '<div class="error">Failed to connect to server. Make sure the Flask server is running on port 5000.</div>';
-            } finally {
-                predictBtn.disabled = false;
-            }
-        }
-    </script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
